@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 
 const ClassDetails = ({ classDetails }) => {
   // Renderiza los detalles de la clase utilizando 'classDetails'
