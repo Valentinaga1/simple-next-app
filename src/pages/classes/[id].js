@@ -1,5 +1,8 @@
+import { useRouter } from 'next/router';
+
 
 const ClassDetails = ({ classDetails }) => {
+
   // Renderiza los detalles de la clase utilizando 'classDetails'
   return (
     <div>
@@ -13,7 +16,10 @@ const ClassDetails = ({ classDetails }) => {
 };
 
 export const getStaticPaths = async () => {
-  const data = await fetch('http://localhost:3000/api/classes'); // Ajusta la URL de la API según tu configuración
+  const baseUrl = process.env.BASE_URL;
+  console.log(`baseUrl: ${baseUrl}`);
+  // console.log(process.env);
+  const data = await fetch(`${baseUrl}/api/classes`); // Ajusta la URL de la API según tu configuración
   const classesData = await data.json();
   const paths = classesData.classes.map((classItem) => ({
     params: { id: classItem.id.toString() },
@@ -26,8 +32,10 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params }) => {
+  const baseUrl = process.env.BASE_URL;
+  console.log(`baseUrl: ${baseUrl}`);
   // Lógica para obtener los detalles de la clase con el ID especificado
-  const data = await fetch('http://localhost:3000/api/classes'); // Ajusta la URL de la API según tu configuración
+  const data = await fetch(`${baseUrl}/api/classes`); // Ajusta la URL de la API según tu configuración
   const classesData = await data.json();
   const classDetails = classesData.classes.find(
     (classItem) => classItem.id === parseInt(params.id)

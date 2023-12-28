@@ -8,7 +8,7 @@ const databasePath = "classes.json";
 export default function handler(req, res) {
   if (req.method === 'GET') {
     const classesData = getClasses();
-    console.log("classesData api", classesData);
+    // console.log("classesData api", classesData);
     res.status(200).json(classesData);
   } else if (req.method === 'POST') {
     const { newClass } = req.body;

@@ -103,8 +103,10 @@ return (
 };
 
 export async function getStaticProps() {
+  const baseUrl = process.env.BASE_URL;
+  console.log(`baseUrl: ${baseUrl}`);
   try {
-    const response = await fetch('http://localhost:3000/api/classes');
+    const response = await fetch(`${baseUrl}/api/classes`);
     if (!response.ok) {
       throw new Error('Failed to fetch');
     }

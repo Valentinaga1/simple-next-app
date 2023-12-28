@@ -26,7 +26,9 @@ const Classes = ({ classes }) => {
 
 export async function getStaticProps() {
   // Realizar la solicitud a la API para obtener las clases
-  const res = await fetch('http://localhost:3000/api/classes'); // Ajusta la URL de la API según tu configuración
+  const baseUrl = process.env.BASE_URL;
+  console.log(`baseUrl: ${baseUrl}`);
+  const res = await fetch(`${baseUrl}/api/classes`); // Ajusta la URL de la API según tu configuración
   const data = await res.json();
 
   return {
