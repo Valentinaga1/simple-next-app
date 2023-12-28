@@ -1,25 +1,27 @@
 import fetchDataFromAPI from '@/services/fetchingData';
 import { useRouter } from 'next/router';
 
-
 const ClassDetails = ({ classDetails }) => {
+  if (!classDetails) {
+    // Manejar caso cuando no hay detalles disponibles
+    return <p>Cargando...</p>;
+  }
 
-  // Renderiza los detalles de la clase utilizando 'classDetails'
   return (
     <div>
       <h1>Detalles de la clase</h1>
-      <h1>{classDetails.name}</h1>
-      <p>{classDetails.content}</p>
+      <h1>{classDetails.title}</h1>
+      <p>{classDetails.body}</p>
       <p><b>Instructor: </b>{classDetails.instructor}</p>
-      {/* Renderiza otros detalles de la clase */}
+      {/* Renderiza otros detalles de la clase si es necesario */}
     </div>
   );
 };
 
 export const getStaticPaths = async () => {
-
+  // Obtiene los datos de la API para construir los paths
   const classesData = await fetchDataFromAPI();
-  const paths = classesData.classes.map((classItem) => ({
+  const paths = classesData.map((classItem) => ({
     params: { id: classItem.id.toString() },
   }));
 
@@ -30,12 +32,17 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params }) => {
+  // Obtiene los detalles de una clase específica según el ID
+  const classId = params.id;
+  const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${classId}`);
 
-  const data =  await fetchDataFromAPI(); // Ajusta la URL de la API según tu configuración
-  const classesData = await data.json();
-  const classDetails = classesData.classes.find(
-    (classItem) => classItem.id === parseInt(params.id)
-  );
+  if (!response.ok) {
+    return {
+      notFound: true, // Manejar caso cuando no se encuentra la clase
+    };
+  }
+
+  const classDetails = await response.json();
 
   return {
     props: {

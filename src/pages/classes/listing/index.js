@@ -1,30 +1,36 @@
 import fetchDataFromAPI from '@/services/fetchingData';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Listing = ({ initialClasses }) => {
-  const [classes, setClasses] = useState(initialClasses.classes);
+  const [classes, setClasses] = useState(initialClasses);
   const [isEditing, setIsEditing] = useState(false);
   const [editingClass, setEditingClass] = useState(null);
-
-  console.log("initialClasses", initialClasses);
+  const [newClassName, setNewClassName] = useState('');
 
   const handleAddClass = async () => {
-    const newClass = { id: classes.length + 1, name: `Class ${classes.length + 1}` };
-    const updatedClasses = [...classes, newClass];
-    console.log("updatedClasses", updatedClasses);
     try {
-      const response = await fetch('/api/classes', {
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ newClass }), // Utiliza el objeto 'newClass'
+        body: JSON.stringify({
+          title: newClassName, // Utiliza el nuevo nombre ingresado
+          body: 'Some content here', // Agrega contenido si es necesario
+          userId: 1, // ID de usuario (simulado)
+        }),
       });
-  
+
       if (response.ok) {
-        console.log('Clase agregada exitosamente');
-        setClasses(updatedClasses);
-        // Realizar acciones adicionales si es necesario
+        const data = await response.json();
+        const newClass = {
+          id: data.id,
+          title: data.title,
+          body: data.body,
+          instructor: 'Instructor Name', // Agrega nombre del instructor si es necesario
+        };
+        setClasses([...classes, newClass]);
+        setNewClassName(''); // Limpia el campo después de agregar la clase
       } else {
         console.error('Error al agregar la clase');
       }
@@ -39,26 +45,22 @@ const Listing = ({ initialClasses }) => {
   };
 
   const handleSaveEdit = async () => {
-    // Aquí puedes realizar la lógica para guardar los cambios de edición
-    setIsEditing(false);
-    setEditingClass(null);
-    // Realiza la llamada a la API para actualizar la clase
     try {
-      const response = await fetch('/api/classes', {
+      const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${editingClass.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ editedClass: editingClass }), // Utiliza el objeto 'editingClass' con los cambios
+        body: JSON.stringify(editingClass),
       });
-  
+
       if (response.ok) {
-        console.log('Clase editada exitosamente');
-        // Actualizar la lista de clases con los cambios hechos
         const updatedClasses = classes.map((classItem) =>
           classItem.id === editingClass.id ? editingClass : classItem
         );
         setClasses(updatedClasses);
+        setIsEditing(false);
+        setEditingClass(null);
       } else {
         console.error('Error al editar la clase');
       }
@@ -67,35 +69,41 @@ const Listing = ({ initialClasses }) => {
     }
   };
 
-return (
+  return (
     <div>
       <h1>Classes:</h1>
+      <input
+        type="text"
+        value={newClassName}
+        onChange={(e) => setNewClassName(e.target.value)}
+        placeholder="Nuevo nombre de clase"
+      />
       <button onClick={handleAddClass}>Agregar Clase</button>
       <ul>
         {classes?.map((classItem) => (
           <li key={classItem.id}>
-            <br/>
-            {isEditing && editingClass && editingClass.id === classItem.id ? (
-              <>
+            <h1>ClassId: {classItem.id}</h1>
+            <h3 onClick={() => handleEditClass(classItem)}>
+              {isEditing && editingClass && editingClass.id === classItem.id ? (
                 <input
                   type="text"
-                  value={editingClass.name}
+                  value={editingClass.title}
                   onChange={(e) =>
                     setEditingClass({
                       ...editingClass,
-                      name: e.target.value,
+                      title: e.target.value,
                     })
                   }
                 />
-                <button onClick={handleSaveEdit}>Guardar</button>
-              </>
-            ) : (
-              <>
-                <h1 onClick={() => handleEditClass(classItem)}>{classItem.name}</h1>
-                <p>{classItem.content}</p>
-                <p><b>Instructor: </b>{classItem.instructor}</p>
-              </>
+              ) : (
+                classItem.title
+              )}
+            </h3>
+            <p>{classItem.body}</p>
+            {isEditing && editingClass && editingClass.id === classItem.id && (
+              <button onClick={handleSaveEdit}>Guardar</button>
             )}
+           <br/>
           </li>
         ))}
       </ul>
@@ -104,11 +112,9 @@ return (
 };
 
 export async function getStaticProps() {
-
   try {
     const classesData = await fetchDataFromAPI();
 
-  
     return {
       props: {
         initialClasses: classesData || [],
@@ -118,9 +124,10 @@ export async function getStaticProps() {
     console.error('Error fetching data:', error);
     return {
       props: {
-        initialClasses: [], // Retorna un arreglo vacío o datos por defecto en caso de error
+        initialClasses: [],
       },
     };
   }
 }
+
 export default Listing;

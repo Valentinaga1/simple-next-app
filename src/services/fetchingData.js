@@ -1,15 +1,7 @@
-const getAbsoluteURL = (path) => {
-  const isServer = typeof window === 'undefined';
-  const protocol = isServer ? 'http' : window.location.protocol.replace(':', '');
-  const host = isServer ? 'localhost:3000' /* Reemplaza con tu host */ : window.location.host;
-  return `${protocol}://${host}${path}`;
-};
-
 const fetchDataFromAPI = async () => {
-  const apiUrl = getAbsoluteURL('/api/classes');
-  console.log("apiUrl", apiUrl);
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    console.log("response", response);
     if (!response.ok) {
       throw new Error('Failed to fetch data');
     }
