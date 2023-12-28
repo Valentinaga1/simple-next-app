@@ -1,3 +1,4 @@
+import fetchDataFromAPI from '@/services/fetchingData';
 import { useState } from 'react';
 
 const Listing = ({ initialClasses }) => {
@@ -103,15 +104,10 @@ return (
 };
 
 export async function getStaticProps() {
-  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-  console.log(`baseUrl: ${baseUrl}`);
-  try {
-    const response = await fetch(`/api/classes`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch');
-    }
 
-    const classesData = await response.json();
+  try {
+    const classesData = await fetchDataFromAPI();
+
   
     return {
       props: {
