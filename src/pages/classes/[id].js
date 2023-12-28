@@ -16,7 +16,7 @@ const ClassDetails = ({ classDetails }) => {
 };
 
 export const getStaticPaths = async () => {
-  const baseUrl = process.env.BASE_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
   console.log(`baseUrl: ${baseUrl}`);
   // console.log(process.env);
   const data = await fetch(`${baseUrl}/api/classes`); // Ajusta la URL de la API según tu configuración
@@ -32,7 +32,7 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params }) => {
-  const baseUrl = process.env.BASE_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
   console.log(`baseUrl: ${baseUrl}`);
   // Lógica para obtener los detalles de la clase con el ID especificado
   const data = await fetch(`${baseUrl}/api/classes`); // Ajusta la URL de la API según tu configuración

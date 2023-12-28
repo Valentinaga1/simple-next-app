@@ -103,7 +103,7 @@ return (
 };
 
 export async function getStaticProps() {
-  const baseUrl = process.env.BASE_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
   console.log(`baseUrl: ${baseUrl}`);
   try {
     const response = await fetch(`${baseUrl}/api/classes`);
