@@ -1,51 +1,64 @@
 import fetchDataFromAPI from '@/services/fetchingData';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
 
-const Classes = ({ classes }) => {
+const ClassDetails = ({ classDetails }) => {
   const router = useRouter();
 
-  const handleClassClick = (classItem) => {
-    router.push(`/classes/${classItem.id}`);
-  };
+  if (router.isFallback) {
+    return <p>Cargando...</p>;
+  }
+
+  if (!classDetails) {
+    return <p>Clase no encontrada</p>;
+  }
 
   return (
     <div>
-      <h1>Classes:</h1>
-      <ul>
-        {classes.map((classItem) => ( // Eliminado '.classes?' ya que 'classes' es un array
-          <li key={classItem.id} onClick={() => handleClassClick(classItem)} style={{ cursor: 'pointer' }}>
-            <br/>
-            <h1><b>Class Id: </b> {classItem.id}</h1>
-            <h3>{classItem.title}</h3> 
-            <p>{classItem.body}</p> 
-            <p><b>Instructor: </b>{classItem.instructor}</p>
-          </li>
-        ))}
-      </ul>
+      <h1>Detalles de la clase</h1>
+      <h1>{classDetails.title}</h1>
+      <p>{classDetails.body}</p>
+      <p><b>Instructor: </b>{classDetails.instructor}</p>
+      {/* Renderizar otros detalles de la clase si es necesario */}
     </div>
   );
 };
 
-export async function getStaticProps() {
-  try {
-    const data = await fetchDataFromAPI();
+export const getStaticPaths = async () => {
+  const classesData = await fetchDataFromAPI();
+  const paths = classesData.map((classItem) => ({
+    params: { id: classItem.id.toString() },
+  }));
 
+  return {
+    paths,
+    fallback: true, // Usar fallback true para habilitar ISR
+  };
+};
+
+export const getStaticProps = async ({ params }) => {
+  const classId = params.id;
+  const classesData = await fetchDataFromAPI();
+
+  if (!classesData) {
     return {
-      props: {
-        classes: data || [], // Enviar datos a la página como props
-      },
-      revalidate: 5,
-    };
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return {
-      props: {
-        classes: [], // Enviar un array vacío en caso de error
-      },
-      revalidate: 5,
+      notFound: true,
     };
   }
-}
 
-export default Classes;
+  const classDetails = classesData.find((classItem) => classItem.id === classId);
+
+  if (!classDetails) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      classDetails,
+    },
+    revalidate: 10, // Tiempo en segundos para la regeneración
+  };
+};
+
+export default ClassDetails;
