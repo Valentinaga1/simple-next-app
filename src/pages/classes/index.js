@@ -35,7 +35,7 @@ export async function getStaticProps() {
       props: {
         classes: data || [], // Enviar datos a la página como props
       },
-      revalidate: 60,
+      revalidate: 5,
     };
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -43,7 +43,7 @@ export async function getStaticProps() {
       props: {
         classes: [], // Enviar un array vacío en caso de error
       },
-      revalidate: 60,
+      revalidate: 5,
     };
   }
 }

@@ -15,12 +15,12 @@ export default function Home() {
         </Link>
       </button>
       {" "}
-      <button>
+      {/* <button>
         <Link href="classes/listing">
           <span className={styles.button}>Go to listing</span>
         </Link>
 
-      </button>
+      </button> */}
     </div>
     
   )
