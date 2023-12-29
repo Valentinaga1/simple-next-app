@@ -16,10 +16,10 @@ const Classes = ({ classes }) => {
         {classes.map((classItem) => ( // Eliminado '.classes?' ya que 'classes' es un array
           <li key={classItem.id} onClick={() => handleClassClick(classItem)} style={{ cursor: 'pointer' }}>
             <br/>
-            <h1>{classItem.title}</h1> {/* 'name' cambiado a 'title' según la estructura de JSONPlaceholder */}
-            <p>{classItem.body}</p> {/* 'content' cambiado a 'body' según la estructura de JSONPlaceholder */}
-            {/* 'instructor' según la estructura de tu API */}
-            {/* Agrega otras propiedades si son necesarias */}
+            <h1><b>Class Id: </b> {classItem.id}</h1>
+            <h3>{classItem.title}</h3> 
+            <p>{classItem.body}</p> 
+            <p><b>Instructor: </b>{classItem.instructor}</p>
           </li>
         ))}
       </ul>

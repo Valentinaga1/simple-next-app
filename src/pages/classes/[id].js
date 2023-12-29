@@ -34,15 +34,21 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   // Obtiene los detalles de una clase específica según el ID
   const classId = params.id;
-  const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${classId}`);
+  const classesData = await fetchDataFromAPI();
 
-  if (!response.ok) {
+  if (!classesData) {
     return {
       notFound: true, // Manejar caso cuando no se encuentra la clase
     };
   }
 
-  const classDetails = await response.json();
+  const classDetails = classesData.find((classItem) => classItem.id === classId);
+
+  if (!classDetails) {
+    return {
+      notFound: true, // Manejar caso cuando no se encuentra la clase
+    };
+  }
 
   return {
     props: {

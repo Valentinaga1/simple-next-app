@@ -9,28 +9,31 @@ const Listing = ({ initialClasses }) => {
 
   const handleAddClass = async () => {
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+      const response = await fetch('https://api.jsonbin.io/v3/b/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Master-Key': "$2a$10$GF.kyelyQOUspc7OD9BxleTNlJ02uxvx5RI/ks.Ni./6jelYiGahS",
+          'X-ACCESS-KEY': "$2a$10$lefvLSvygOssyPa6txdMKu/UakKiR/cHAzzD/u8IpHnSWveL3Te4y",
         },
         body: JSON.stringify({
-          title: newClassName, // Utiliza el nuevo nombre ingresado
-          body: 'Some content here', // Agrega contenido si es necesario
-          userId: 1, // ID de usuario (simulado)
+          id: await fetchDataFromAPI().length + 1,
+          title: newClassName,
+          body: 'Some content here',
+          instructor: 'Instructor Name',
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
         const newClass = {
-          id: data.id,
-          title: data.title,
-          body: data.body,
-          instructor: 'Instructor Name', // Agrega nombre del instructor si es necesario
+          id: data.record.id,
+          title: data.record.title,
+          body: data.record.body,
+          instructor: 'Instructor Name',
         };
         setClasses([...classes, newClass]);
-        setNewClassName(''); // Limpia el campo después de agregar la clase
+        setNewClassName('');
       } else {
         console.error('Error al agregar la clase');
       }
@@ -46,10 +49,12 @@ const Listing = ({ initialClasses }) => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${editingClass.id}`, {
+      const response = await fetch(`https://api.jsonbin.io/v3/b/658ee01f266cfc3fde6ff58a/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'X-Master-Key': "$2a$10$GF.kyelyQOUspc7OD9BxleTNlJ02uxvx5RI/ks.Ni./6jelYiGahS",
+          'X-ACCESS-KEY': "$2a$10$lefvLSvygOssyPa6txdMKu/UakKiR/cHAzzD/u8IpHnSWveL3Te4y",
         },
         body: JSON.stringify(editingClass),
       });
@@ -100,6 +105,7 @@ const Listing = ({ initialClasses }) => {
               )}
             </h3>
             <p>{classItem.body}</p>
+            <p><b>Instructor: </b>{classItem.instructor}</p>
             {isEditing && editingClass && editingClass.id === classItem.id && (
               <button onClick={handleSaveEdit}>Guardar</button>
             )}
