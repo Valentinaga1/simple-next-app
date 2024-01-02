@@ -18,7 +18,6 @@ const ClassDetails = ({ classDetails }) => {
       <h1>{classDetails.title}</h1>
       <p>{classDetails.body}</p>
       <p><b>Instructor: </b>{classDetails.instructor}</p>
-      {/* Renderizar otros detalles de la clase si es necesario */}
     </div>
   );
 };
@@ -31,7 +30,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: true, // Usar fallback true para habilitar ISR
+    fallback: true, // fallback true para habilitar  ISR
   };
 };
 
@@ -57,7 +56,7 @@ export const getStaticProps = async ({ params }) => {
     props: {
       classDetails,
     },
-    revalidate: 60, // Tiempo en segundos para la regeneración
+    revalidate: 60, 
   };
 };
 

@@ -13,7 +13,7 @@ const Classes = ({ classes }) => {
     <div>
       <h1>Classes:</h1>
       <ul>
-        {classes.map((classItem) => ( // Eliminado '.classes?' ya que 'classes' es un array
+        {classes.map((classItem) => ( 
           <li key={classItem.id} onClick={() => handleClassClick(classItem)} style={{ cursor: 'pointer' }}>
             <br/>
             <h1><b>Class Id: </b> {classItem.id}</h1>
@@ -33,7 +33,7 @@ export async function getStaticProps() {
 
     return {
       props: {
-        classes: data || [], // Enviar datos a la página como props
+        classes: data || [],
       },
       revalidate: 5,
     };
@@ -41,7 +41,7 @@ export async function getStaticProps() {
     console.error('Error fetching data:', error);
     return {
       props: {
-        classes: [], // Enviar un array vacío en caso de error
+        classes: [], 
       },
       revalidate: 5,
     };
